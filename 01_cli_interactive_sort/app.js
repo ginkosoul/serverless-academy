@@ -38,8 +38,7 @@ const rl = readline.createInterface({
   output: process.stdout,
 });
 
-rl.setPrompt(messages.greatings + messages.readData);
-rl.prompt();
+console.log(messages.greatings + messages.readData);
 rl.on("line", readData);
 
 function readData(input) {
@@ -74,56 +73,63 @@ function runProgram(options) {
     case 0:
       console.log(messages.goodBye);
       return state.exit;
+
     case 1:
       console.log("You choose", messages.options[0].slice(3));
       console.log(
         data
-          .map((element) => Number(element) || element)
+          .map((el) => (Number.isNaN(Number(el)) ? el : Number(el)))
           .filter((el) => typeof el === "string")
           .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
       );
       return state.next;
+
     case 2:
       console.log("You choose", messages.options[1].slice(3));
       console.log(
         data
-          .map((element) => Number(element) || element)
+          .map((el) => (Number.isNaN(Number(el)) ? el : Number(el)))
           .filter((el) => typeof el === "number")
           .sort((a, b) => a - b)
       );
       return state.next;
+
     case 3:
       console.log("You choose", messages.options[2].slice(3));
       console.log(
         data
-          .map((element) => Number(element) || element)
+          .map((el) => (Number.isNaN(Number(el)) ? el : Number(el)))
           .filter((el) => typeof el === "number")
           .sort((a, b) => b - a)
       );
       return state.next;
+
     case 4:
       console.log("You choose", messages.options[3].slice(3));
       console.log(
         data
-          .map((element) => Number(element) || element)
+          .map((el) => (Number.isNaN(Number(el)) ? el : Number(el)))
           .filter((el) => typeof el === "string")
           .sort((a, b) => a.length - b.length)
       );
       return state.next;
+
     case 5:
       console.log("You choose", messages.options[4].slice(3));
       console.log([
         ...new Set(
           data
-            .map((element) => Number(element) || element)
+            .map((el) => (Number.isNaN(Number(el)) ? el : Number(el)))
             .filter((el) => typeof el === "string")
         ),
       ]);
       return state.next;
+
     case 6:
       console.log("You choose", messages.options[4].slice(3));
       console.log([...new Set(data)]);
       return state.next;
+
     default:
       console.log(messages.incorect);
       return state.options;
