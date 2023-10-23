@@ -1,0 +1,47 @@
+[
+  {
+    "name": "Andy",
+    "gender": "male",
+    "age": 25
+  },
+  {
+    "name": "Jane",
+    "gender": "female",
+    "age": 18
+  },
+  {
+    "gender": "male",
+    "age": 28,
+    "name": "Peter"
+  },
+  {
+    "gender": "female",
+    "age": 18,
+    "name": "peter"
+  },
+  {
+    "gender": "male",
+    "age": 32,
+    "name": "peter"
+  },
+  {
+    "gender": "female",
+    "age": 14,
+    "name": "Emily"
+  },
+  {
+    "gender": "male",
+    "age": 7,
+    "name": "JoyBoy"
+  },
+  {
+    "gender": "male",
+    "age": 48,
+    "name": "John"
+  },
+  {
+    "gender": "male",
+    "age": 29,
+    "name": "Nikita"
+  }
+]
