@@ -1,0 +1,21 @@
+{
+  "name": "03_cli_telegram_console_sender",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js",
+    "env-linux": "export $(cat .env | xargs) && env",
+    "start-linux": "export $(cat .env | xargs) && npm start",
+    "env-windows": "(for /F \"tokens=*\" %i in (.env) do set %i)",
+    "start-windows": "(for /F \"tokens=*\" %i in (.env) do set %i) && npm start"
+  },
+  "author": "ginkosoul",
+  "license": "ISC",
+  "dependencies": {
+    "commander": "^11.1.0",
+    "node-telegram-bot-api": "^0.63.0"
+  }
+}
