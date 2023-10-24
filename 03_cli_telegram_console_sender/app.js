@@ -15,7 +15,7 @@ const token = process.env.TELEGRAM_API;
 const bot = new TelegramBot(token);
 
 async function getChatId() {
-  const updates = await bot.getUpdates();
+  const updates = await bot.getUpdates({ offset: -1 });
 
   if (updates.length) {
     const uniqueChats = [];
@@ -26,6 +26,7 @@ async function getChatId() {
     await addChat(uniqueChats);
     return uniqueChats.pop().id;
   } else {
+    console.log("Useless message: ");
     return await getLastChatId();
   }
 }
@@ -36,6 +37,7 @@ async function invokeAction({ message, photo }) {
   if (chatId) {
     if (message) {
       await bot.sendMessage(chatId, message);
+      bot.get;
     }
     if (photo) {
       //   const stream = fs.createReadStream(photo);
