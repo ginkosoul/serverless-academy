@@ -56,7 +56,7 @@ bot.onText(/\/start/, function (message) {
 });
 
 bot.on("callback_query", handleQuery);
-bot.on("message", updateChatName);
+bot.on("message", updateCityName);
 
 function handleQuery(query) {
   const chatId = query.message.chat.id;
@@ -103,7 +103,7 @@ function handleQuery(query) {
   }
 }
 
-function updateChatName(message) {
+function updateCityName(message) {
   const chatId = message.chat.id;
   if (chatsToUpdate.includes(chatId)) {
     chatsToUpdate.splice(chatsToUpdate.indexOf(chatId), 1);
