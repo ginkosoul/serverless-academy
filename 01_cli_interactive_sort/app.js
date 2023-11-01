@@ -1,5 +1,4 @@
-#!usr/bin/env node
-const readline = require("readline");
+import { createInterface } from "readline";
 
 const state = Object.freeze({
   data: "DATA",
@@ -15,7 +14,7 @@ const data = [];
 const options = ["exit", "1", "2", "3", "4", "5", "6"];
 
 const messages = {
-  greatings: `Hello. `,
+  greatings: "Hello. ",
   readData: "Enter ten words or digits separated by spaces:\n",
   options: [
     "1 - Sort words alphabetically",
@@ -33,7 +32,7 @@ const messages = {
   choose: "Choose an option and press enter:",
 };
 
-const rl = readline.createInterface({
+const rl = createInterface({
   input: process.stdin,
   output: process.stdout,
 });
@@ -142,10 +141,11 @@ function clearData(options) {
       console.log(messages.goodBye);
       return state.exit;
     case 1:
-      console.log("You choose", messages.options[0]);
+      console.log("You choose", messages.dataExists[0]);
       return state.data;
     case 2:
-      console.log("You choose", messages.options[1]);
+      console.log("You choose", messages.dataExists[1]);
+      data.length = 0;
       return state.data;
     default:
       console.log(messages.incorect);

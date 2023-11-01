@@ -57,7 +57,6 @@ function askUsersDetails(name) {
     .prompt(questions.slice(1, -2))
     .then((answers) => {
       answers.name = name;
-      console.log("Type of age", typeof answers.age);
       return addUser(answers);
     })
     .then(() => {
