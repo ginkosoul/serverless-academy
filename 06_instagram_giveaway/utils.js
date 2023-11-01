@@ -3,25 +3,19 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
-const chatsPath = path.join(__dirname, "db", "chats.txt");
+const getCount = createCount();
 
 export function parseArgv(argv) {
-  let dirFlag = false;
   const args = argv.slice(2);
   const paths = [];
   const funcs = [];
   args.forEach((e) => {
     if (e.match(/(\-u)|(\-\-unique)/)) {
-      console.log("uniqueValues");
-      funcs.push("uniqueValues");
+      funcs.push(uniqueValues);
     } else if (e.match(/(\-a)|(\-\-all)/)) {
-      console.log("existInAllFiles");
-      funcs.push("existInAllFiles");
+      funcs.push(existInAllFiles);
     } else if (e.match(/(\-t)|(\-\-ten)/)) {
-      console.log("existInAtleastTen");
-      funcs.push("existInAtleastTen");
-    } else if (e.match(/(\-d)|(\-\-director)/)) {
-      dirFlag = true;
+      funcs.push(existInAtleastTen);
     } else {
       const filepath = path.isAbsolute(e)
         ? path.normalize(e)
@@ -30,10 +24,10 @@ export function parseArgv(argv) {
       paths.push(filepath);
     }
   });
-  return [dirFlag, paths];
+  return [funcs, paths];
 }
 
-export async function readFiles(paths, directory) {
+export async function readFiles(paths) {
   const filesList = [];
   const dirList = [];
 
@@ -54,38 +48,53 @@ export async function readFiles(paths, directory) {
   return await Promise.all(filesList.map((path) => fs.readFile(path, "utf8")));
 }
 
-export function uniqueValues(files) {
-  const timeStamps = [];
-  const length = files.length;
-  const ten = 10;
-  //   const unique = new Set();
+function createCount() {
   const count = {};
-  files.forEach((file, idx) => {
-    file.split("\n").forEach((value) => {
-      const v = value.trim();
-      if (!count[v]) {
-        count[v] = new Array(length).fill(false);
-      }
-      count[v][idx] = true;
-
-      //   if (unique.has(value)) {
-      //     count[value] = count[value] ? count[value] + 1 : 1;
-      //   } else {
-      //     unique.add(value);
-      //   }
+  return (files) => {
+    if (Object.keys(count).length) return count;
+    const length = files.length;
+    files.forEach((file, idx) => {
+      file.forEach((value) => {
+        const v = value.trim();
+        if (!count[v]) {
+          count[v] = new Array(length).fill(false);
+        }
+        count[v][idx] = true;
+      });
     });
-  });
-  timeStamps.push(Date.now());
-  const uniqueArr = Object.entries(count);
-  const [uniqueTen, uniqueAll] = uniqueArr.reduce(
-    (acc, [key, value]) => {
-      const countInFiles = value.reduce((acc, e) => (e ? acc + 1 : acc), 0);
-      if (countInFiles >= ten) acc[0] += 1;
-      if (countInFiles === length) acc[1] += 1;
-      return acc;
-    },
-    [0, 0]
-  );
-  timeStamps.push(Date.now());
-  return { unique: uniqueArr.length, uniqueTen, uniqueAll, timeStamps };
+    return count;
+  };
+}
+
+export function uniqueValues(files) {
+  const count = getCount(files);
+
+  return `Total unique count: ${Object.keys(count).length}`;
+}
+
+export function existInAllFiles(files) {
+  const length = files.length;
+  const count = getCount(files);
+
+  const uniqueArr = Object.values(count);
+  const existInAll = uniqueArr.reduce((acc, value) => {
+    const countInFiles = value.reduce((acc, e) => (e ? acc + 1 : acc), 0);
+    if (countInFiles === length) return acc + 1;
+    return acc;
+  }, 0);
+
+  return `At list ten files count: ${existInAll}`;
+}
+
+export function existInAtleastTen(files) {
+  const ten = 10;
+  const count = getCount(files);
+  const uniqueArr = Object.values(count);
+  const uniqueTen = uniqueArr.reduce((acc, value) => {
+    const countInFiles = value.reduce((acc, e) => (e ? acc + 1 : acc), 0);
+    if (countInFiles >= ten) return acc + 1;
+    return acc;
+  }, 0);
+
+  return `Exist in all files: ${uniqueTen}`;
 }

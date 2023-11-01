@@ -1,4 +1,3 @@
-import { readFile } from "fs/promises";
 const baseUrl = "https://jsonbase.com/sls-team/";
 const endPoints = [
   "json-793",
@@ -25,14 +24,14 @@ const endPoints = [
 
 const totalCount = { True: 0, False: 0 };
 
-const constuctor = (count, endPoint) =>
+const constructor = (count, endPoint) =>
   fetch(baseUrl + endPoint)
-    .catch((rej) => (count < 0 ? rej : constuctor(count - 1, endPoint)))
+    .catch((rej) => (count < 0 ? rej : constructor(count - 1, endPoint)))
     .then((res) =>
-      res.status === 200 || count < 0 ? res : constuctor(count - 1, endPoint)
+      res.status === 200 || count < 0 ? res : constructor(count - 1, endPoint)
     );
 const responses = await Promise.allSettled(
-  endPoints.map((endPoint) => constuctor(3, endPoint))
+  endPoints.map((endPoint) => constructor(3, endPoint))
 );
 
 responses.forEach((response, index) => {
@@ -43,33 +42,27 @@ responses.forEach((response, index) => {
           /[\'\"]?isDone[\'\"]?\s*:\s*[\'\"]?(([Tt]rue)|([Ff]alse))[\'\"]?/gi
         )
         .forEach((result) => {
-          if (result.match(/[Tt]rue/)) totalCount.True += 1;
-          if (result.match(/[Ff]alse/)) totalCount.False += 1;
+          if (result.match(/[Tt]rue/)) {
+            totalCount.True += 1;
+            console.log(
+              "response",
+              `[Success] ${baseUrl}${endPoints[index]}: isDone - True`
+            );
+          } else {
+            totalCount.False += 1;
+            console.log(
+              "response",
+              `[Success] ${baseUrl}${endPoints[index]}: isDone - False`
+            );
+          }
         });
     });
-    console.log(
-      "response",
-      `[Success] ${baseUrl}${endPoints[index]}: isDone - True`
-    );
   } else {
     console.log(
       `[Fail] ${baseUrl}${endPoints[index]}: The endpoint is unavailable`
     );
   }
 });
-
-console.log("Found True values: ", totalCount.True);
-console.log("Found False values: ", totalCount.False);
-
-const json = JSON.parse(
-  await readFile(new URL("./data.json", import.meta.url))
-);
-JSON.stringify(json)
-  .match(/[\'\"]?isDone[\'\"]?\s*:\s*[\'\"]?(([Tt]rue)|([Ff]alse))[\'\"]?/gi)
-  .forEach((result) => {
-    if (result.match(/[Tt]rue/)) totalCount.True += 1;
-    if (result.match(/[Ff]alse/)) totalCount.False += 1;
-  });
 
 console.log("Found True values: ", totalCount.True);
 console.log("Found False values: ", totalCount.False);
